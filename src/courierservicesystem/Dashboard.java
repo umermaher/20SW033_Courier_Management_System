@@ -58,6 +58,7 @@ public class Dashboard{
                     totalOrder.setBackground(new Color(0,0,80));
                     dashboardHomePanel.setVisible(true);
                 }
+                newOrder.setForeground(Color.WHITE);
                 check(bookedOrderPanel);
                 check(deliveredOrderPanel);
                 check(totalOrderPanel);
@@ -123,11 +124,13 @@ public class Dashboard{
                    if(bookedOrderPanel==null){
                        bookedOrderPanel = new TablePanel(frame,"booked");
                        bookedOrderPanel.addActions();
+                       bookedOrderPanel.search();
                    }
                    else{
                        bookedOrderPanel=null;
                        bookedOrderPanel=new TablePanel(frame,"booked");
                        bookedOrderPanel.addActions();
+                       bookedOrderPanel.search();
 //                       bookedOrderPanel.connectDb("booked");
 //                       bookedOrderPanel.mainPanel.setVisible(true);
                    }
@@ -137,11 +140,13 @@ public class Dashboard{
                    if(bookedOrderPanel==null){
                        bookedOrderPanel = new TablePanel(frame,"booked");
                        bookedOrderPanel.addActions();
+                       bookedOrderPanel.search();
                    }
                    else{
                        bookedOrderPanel=null;
                        bookedOrderPanel=new TablePanel(frame,"booked");
                        bookedOrderPanel.addActions();
+                       bookedOrderPanel.search();
 //                       bookedOrderPanel.connectDb("booked");
 //                       bookedOrderPanel.mainPanel.setVisible(true);
                    }
@@ -157,11 +162,13 @@ public class Dashboard{
                    if(bookedOrderPanel==null){
                         bookedOrderPanel = new TablePanel(frame,"booked");
                         bookedOrderPanel.addActions();
+                        bookedOrderPanel.search();
                    }
                    else{
                        bookedOrderPanel=null;
                        bookedOrderPanel=new TablePanel(frame,"booked");
                        bookedOrderPanel.addActions();
+                       bookedOrderPanel.search();
 //                       bookedOrderPanel.connectDb("booked");
 //                        bookedOrderPanel.mainPanel.setVisible(true);
                    }
@@ -173,8 +180,10 @@ public class Dashboard{
                 //dashboard is by-default instantiate and visible.
                 if(dashboardHomePanel.isVisible()){
                    dashboardHomePanel.setVisible(false);
-                   if(cancelledOrderPanel==null)
+                   if(cancelledOrderPanel==null){
                        cancelledOrderPanel = new TablePanel(frame,"cancelled");
+                       cancelledOrderPanel.search();
+                   }
                    else{
                        cancelledOrderPanel=null;
                        cancelledOrderPanel = new TablePanel(frame,"cancelled");
@@ -415,7 +424,7 @@ public class Dashboard{
              public void mouseReleased(MouseEvent me) {}
              @Override
              public void mouseEntered(MouseEvent me) {
-                 b.setBorder(BorderFactory.createEtchedBorder(Color.white,null));
+                 b.setBorder(BorderFactory.createEtchedBorder(Color.blue,null));
              }
              @Override
              public void mouseExited(MouseEvent me) {

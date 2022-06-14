@@ -26,38 +26,38 @@ public class TablePanel {
     JTextField insertIdField;
     JScrollPane scroll;       //For scroll bar in a table
     ImageIcon truck;          //image
-    JButton cancelOrderBtn,deliveredBtn;
+    JButton cancelOrderBtn,deliveredBtn,searchBtn;
     Connection con,con2,con3;
     boolean checkInsertion=true,checkedInsertion=false; 
 //checkInsertion is for checking whether the data is fetched and inserted into delivered or cancelled database from booked ordered database.
 //checkedInsertion is to check the above statement then delete data from the booked order database    
     
-    public String data[][]=new String[100][4];
-    public String columns[]={"Order ID","Shipper details","Consignee details","Shipment details"};
+    public String data[][]=new String[100][5];
+    public String columns[]={"Order ID","Date","Shipper details","Consignee details","Shipment details"};
+    
     public TablePanel(JFrame frame,String database){
         mainPanel=new JPanel();
         mainPanel.setPreferredSize(new Dimension(934,650));
         mainPanel.setBackground(Color.blue);
         mainPanel.setLayout(new BorderLayout());
          
+      
         frame.add(mainPanel,BorderLayout.CENTER);  //adding main Panel to JFrame, main Panel is basically BookedOrderPanel
         setComponents(); 
         connectDb(database);
-        mainPanel.add(titlePanel,BorderLayout.NORTH);     //title panel is on the top of mainPanel
+        //mainPanel.add(titlePanel,BorderLayout.NORTH);     //title panel is on the top of mainPanel
         mainPanel.add(tablePanel,BorderLayout.CENTER);    //table Panel is on center
 
-        
-        titlePanel.add(icon);
         tablePanel.add(scroll);
         
         //frame.validate();
     }
     
     public void setComponents(){
-        titlePanel=new JPanel();
-        titlePanel.setPreferredSize(new Dimension(0,160));
-        titlePanel.setBackground(Color.white);
-        titlePanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+//        titlePanel=new JPanel();
+//        titlePanel.setPreferredSize(new Dimension(0,160));
+//        titlePanel.setBackground(Color.white);
+//        titlePanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         
         tablePanel=new JPanel();
         tablePanel.setBackground(Color.white);
@@ -79,13 +79,14 @@ public class TablePanel {
             
             //setting column's width
             table.getColumnModel().getColumn(0).setPreferredWidth(50);
-            table.getColumnModel().getColumn(1).setPreferredWidth(350);
-            table.getColumnModel().getColumn(2).setPreferredWidth(350);
-            table.getColumnModel().getColumn(3).setPreferredWidth(170);
+            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(2).setPreferredWidth(300);
+            table.getColumnModel().getColumn(3).setPreferredWidth(300);
+            table.getColumnModel().getColumn(4).setPreferredWidth(170);
             
             scroll=new JScrollPane(table);   //instantiate scrolPane and add table of booked orders.
             scroll.setBackground(new Color(0,0,80));
-            scroll.setPreferredSize(new Dimension(920,400));
+            scroll.setPreferredSize(new Dimension(920,550));
     }
     public void connectDb(String database){
         try {
@@ -100,14 +101,14 @@ public class TablePanel {
             int i=0;
             while(rs1.next()){
                 //adding data in the rows of shipper's column
-                data[i][1]="  Name:   "+rs1.getString(2)+"\n"+"  Email:   "+rs1.getString(3)+"\n"+"  Phone No:  "+rs1.getString(4)+"\n"+"  City:   "+rs1.getString(5)+"\n"+"  Address:   "+rs1.getString(6);
+                data[i][2]="  Name:   "+rs1.getString(2)+"\n"+"  Email:   "+rs1.getString(3)+"\n"+"  Phone No:  "+rs1.getString(4)+"\n"+"  City:   "+rs1.getString(5)+"\n"+"  Address:   "+rs1.getString(6);
                 i++;
             } 
             i=0;
             ResultSet rs2=st.executeQuery("SELECT * FROM "+database+".consignee");
             while(rs2.next()){
                 //adding data in the rows of consignee's column of table
-                data[i][2]="  Name:   "+rs2.getString(2)+"\n"+"  Email:   "+rs2.getString(3)+"\n"+"  Phone No:  "+rs2.getString(4)+"\n"+"  City:   "+rs2.getString(5)+"\n"+"  Address:   "+rs2.getString(6);
+                data[i][3]="  Name:   "+rs2.getString(2)+"\n"+"  Email:   "+rs2.getString(3)+"\n"+"  Phone No:  "+rs2.getString(4)+"\n"+"  City:   "+rs2.getString(5)+"\n"+"  Address:   "+rs2.getString(6);
                 i++;
             }
             i=0;
@@ -115,8 +116,12 @@ public class TablePanel {
             while(rs3.next()){
                 //adding data in the rows of order id column
                 data[i][0]="\n\n       "+rs3.getString(1);
+                
+                //adding data in the rows of order id column
+                data[i][1]="\n\n       "+rs3.getString(5)+"\n       "+rs3.getString(6);
+                
                 //adding data in the rows of shipment's column
-                data[i][3]=" Order ID: "+rs3.getString(1)+"\n"+" Pieces: "+rs3.getString(2)+"\n"+" Weight(g): "+rs3.getString(3)+"\n"+" Description: "+rs3.getString(4);
+                data[i][4]=" Order ID: "+rs3.getString(1)+"\n"+" Pieces: "+rs3.getString(2)+"\n"+" Weight(g): "+rs3.getString(3)+"\n"+" Description: "+rs3.getString(4);
                 i++;
             }
         }catch (ClassNotFoundException ex) {
@@ -276,14 +281,17 @@ public class TablePanel {
                     data[1]=rs1.getString(2);
                     data[2]=rs1.getString(3);
                     data[3]=rs1.getString(4);
+                    data[4]=rs1.getString(5);
+                    data[5]=rs1.getString(6);
                 }
                     con=(Connection)DriverManager.getConnection("jdbc:mysql://localhost:3306/"+database, "root","root");
-                PreparedStatement ps=con.prepareStatement("INSERT INTO SHIPMENT VALUES(?,?,?,?)");
+                PreparedStatement ps=con.prepareStatement("INSERT INTO SHIPMENT VALUES(?,?,?,?,?,?)");
                 ps.setString(1, data[0]);
                 ps.setString(2, data[1]);
                 ps.setString(3, data[2]);
                 ps.setString(4, data[3]);
-                
+                ps.setString(5, data[4]);
+                ps.setString(6, data[5]);
                 ps.execute();
                 System.out.println("Inserted");
                 checkedInsertion=true;
@@ -308,5 +316,26 @@ public class TablePanel {
             checkInsertion=false;
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+    }
+    public void search(){
+        JPanel p=new JPanel();
+        p.setLayout(new FlowLayout(FlowLayout.TRAILING));
+        p.setPreferredSize(new Dimension(500,40));
+        p.setBackground(Color.WHITE);
+        
+        searchBtn =new JButton("Search");
+        searchBtn.setBackground(new Color(0,0,80));
+        searchBtn.setForeground(Color.WHITE);
+        searchBtn.setFocusable(false);
+        
+        p.add(searchBtn);
+        tablePanel.add(p);
+        searchBtn.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    
+                }
+        });
     }
 }
